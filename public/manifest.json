@@ -1,0 +1,28 @@
+{
+  "short_name": "PMU BookStore",
+  "name": "PMU BookStore",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "maskable_icon_x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose":"maskable"
+    },
+    {
+      "src": "maskable_icon.png",
+      "type": "image/png",
+      "sizes": "416x416"
+    }
+  ],
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
+  "background_color": "#F5DBCC",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#F5DBCC"
+}

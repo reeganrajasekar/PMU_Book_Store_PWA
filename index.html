@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PMU BookStore</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#fff">
+    <style>
+      body {
+        background-color: #F5DBCC !important;
+      }
+    </style>
+
+    <script>
+      if('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/serviceWorker.js').then((reg) => {
+            console.log('Worker Registered')
+          }).catch((err) => {
+            console.log('Error in service worker registration.')
+          })
+        })
+      }
+      var no = window.matchMedia('(display-mode: standalone)').matches
+
+      if(no){
+        document.getElementById('load').style.display="none";
+      }
+
+      var Name = "Unknown OS";
+      if (navigator.userAgent.indexOf("Win") != -1) Name = "win";
+      if (navigator.userAgent.indexOf("Mac") != -1) Name = "mac";
+      if (navigator.userAgent.indexOf("Linux") != -1) Name = "linux";
+      if (navigator.userAgent.indexOf("Android") != -1) Name = "android";
+      if (navigator.userAgent.indexOf("like Mac") != -1) Name = "ios";
+
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        if(Name=="ios"){
+          alert("ios")
+        }else if(Name=="android"){
+          alert("and")
+        }else{
+          var ios = false;
+          var android = false;
+        }
+      });
+
+    </script>
+
+  </head>
+  <body>
+    <div id="root"></div>
+    <div style="top:0;bottom:0;left:0;right:0;margin:0px;background-color: #F5DBCC;height:100%;width:100%;z-index:1000;position: fixed;" id="load">
+
+    </div>
+    <script type="module" src="/src/main.jsx"></script>
+    
+  </body>
+</html>
