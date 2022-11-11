@@ -18,13 +18,11 @@ export default function Register(){
             <h1 style={{padding:"20px 0px 20px 0px",fontSize:26,fontWeight:'bold',color:"#042744"}}>
                 <b>PMU Bookstore</b>
             </h1>
-                <input onChange={(i)=>{setName(i.target.value)}} placeholder='Name' type="text" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                <input onChange={(i)=>{setId(i.target.value)}} placeholder='Reg No' type="text" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                <input onChange={(i)=>{setEmail(i.target.value)}} placeholder='Email' type="email" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                <input onChange={(i)=>{setPassword(i.target.value)}} placeholder='Password' type="password" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
+                <input onChange={(i)=>{setName(i.target.value)}} placeholder='Name' type="text" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
+                <input onChange={(i)=>{setId(i.target.value)}} placeholder='ID Number' type="text" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
                 <select style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}} onChange={(i)=>{setDept(i.target.value)}} required >
                   <optgroup label="College of Engineering">
-                    <option disabled defaultValue={""}>Department</option>
+                    <option disabled defaultValue={""} selected>Department</option>
                     <option value="Civil Engineering">Civil Engineering</option>
                     <option value="Electrical Engineering">Electrical Engineering</option>
                     <option value="Mechanical Engineering">Mechanical Engineering</option>
@@ -58,11 +56,18 @@ export default function Register(){
                   </optgroup>
 
                 </select>
-                <p style={{color:'red'}}>{err}</p>
+                <input onChange={(i)=>{setEmail(i.target.value)}} placeholder='Email' type="email" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
+                <input onChange={(i)=>{setPassword(i.target.value)}} placeholder='Password' type="password" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
+                <ul>
+                  <li>Password should be at least 12 characters</li>
+                  <li>mixture of both uppercase and lowercase letters</li>
+                  <li>mixture of letters and numbers</li>
+                </ul>
+                <p style={{color:'red',textAlign:"center"}}>{err}</p>
 
-                <div>
+                <div style={{display:"inline-block"}}>
                     <input onClick={()=>{setStaff((staff)?false:true)}} type="checkbox" name=""  style={{marginRight:7,marginBottom:20,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                    <label style={{color:"#042744",marginBottom:20}}>Register as a Staff</label>
+                    <label style={{color:"#042744",marginBottom:20}}>Register as an Academic Staff</label>
                 </div>
 
                 <button
@@ -80,68 +85,106 @@ export default function Register(){
 
                     onClick={()=>{
                         if(email!="" && name!="" && id!="" && password!="" && dept!=""){
-                            let reg = /[a-zA-Z0-9]@(pmu)\.edu\.sa\b$/g;
-                            if (reg.test(email) === false) {
-                              setErr("Email is Incorrect");
-                            }
-                            else {
-                              if(staff){
-                                fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/staff/register', {
-                                  method: 'POST',
-                                  body: JSON.stringify({
-                                    staff_id:id,
-                                    staff_name:name,
-                                    staff_email:email,
-                                    staff_password:password,
-                                    dept:dept
-                                  }),
-                                  headers: {
-                                    "Content-Type": "application/json"
-                                  },
-                                })
-                                  .then((response) => response.json())
-                                  .then((responseJson) => {
-                                    if(responseJson.code == "registered"){
-                                      history.push("/")
-                                    }else{
-                                      setErr(responseJson.code);
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    setErr("Server Error Try Again")
-                                    console.error(error);
-                                  });
+                          let stureg = /[0-9]@(pmu)\.edu\.sa\b$/g;
+                          let reg = /[a-zA-Z0-9]@(pmu)\.edu\.sa\b$/g;
+                          let regstuid = /[0-9]\b$/g;
+                          let regid = /[FAC][0-9]+[\d\.\-\/]+[0-9]/g;
+                          if (reg.test(email) === true && staff) {
+                            if(regid.test(id) === true){
+                              if(password.length >= 12){
+                                let format = /[A-Z]/;
+                                let format1 = /[a-z]/;
+                                if(format.test(password)===true && format1.test(password)===true){
+                                  let newFormat =  /[0-9]/;
+                                  if(newFormat.test(password)===true){
+                                    fetch('https://wakeful-flower-wind.glitch.me/api/staff/register', {
+                                      method: 'POST',
+                                      body: JSON.stringify({
+                                        staff_id:id,
+                                        staff_name:name,
+                                        staff_email:email,
+                                        staff_password:password,
+                                        dept:dept
+                                      }),
+                                      headers: {
+                                        "Content-Type": "application/json"
+                                      },
+                                    })
+                                    .then((response) => response.json())
+                                    .then((responseJson) => {
+                                      if(responseJson.code == "registered"){
+                                        history.push("/")
+                                      }else{
+                                        setErr(responseJson.code);
+                                      }
+                                    })
+                                    .catch((error) => {
+                                      setErr("Server Error Try Again")
+                                      console.error(error);
+                                    });
+                                  }else{
+                                    setErr("Password should be a mixture of letters and numbers")
+                                  }
+                                }else{
+                                  setErr("Password should be a mixture of both uppercase and lowercase letters")
+                                }
                               }else{
-                                fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/register', {
-                                  method: 'POST',
-                                  body: JSON.stringify({
-                                    student_id:id,
-                                    student_name:name,
-                                    student_email:email,
-                                    student_password:password,
-                                    dept:dept
-                                  }),
-                                  headers: {
-                                    "Content-Type": "application/json"
-                                  },
-                                })
-                                  .then((response) => response.json())
-                                  .then((responseJson) => {
-                                    if(responseJson.code == "registered"){
-                                      history.push("/")
-                                    }else{
-                                      setErr(responseJson.code);
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    setErr("Server Error Try Again")
-                                    console.error(error);
-                                  });
+                              setErr("Password length should be at least 12 characters")
                               }
+                            }else{
+                              setErr("ID Number is incorrect")
+                            }
+                          }else if(stureg.test(email) === true && !staff){
+                            if(regstuid.test(id) === true){
+                              if(password.length >= 12){
+                                let format = /[A-Z]/;
+                                let format1 = /[a-z]/;
+                                if(format.test(password)===true && format1.test(password)===true){
+                                  let newFormat =  /[0-9]/;
+                                  if(newFormat.test(password)===true){
+                                    fetch('https://wakeful-flower-wind.glitch.me/api/register', {
+                                      method: 'POST',
+                                      body: JSON.stringify({
+                                        student_id:id,
+                                        student_name:name,
+                                        student_email:email,
+                                        student_password:password,
+                                        dept:dept
+                                      }),
+                                      headers: {
+                                        "Content-Type": "application/json"
+                                      },
+                                    })
+                                    .then((response) => response.json())
+                                    .then((responseJson) => {
+                                      if(responseJson.code == "registered"){
+                                        history.push("/")
+                                      }else{
+                                        setErr(responseJson.code);
+                                      }
+                                    })
+                                    .catch((error) => {
+                                      setErr("Server Error Try Again")
+                                      console.error(error);
+                                    });
+                                  }else{
+                                    setErr("Password should be a mixture of letters and numbers")
+                                  }
+                                }else{
+                                  setErr("Password should be a mixture of both uppercase and lowercase letters")
+                                }
+                              }else{
+                                setErr("Password length should be at least 12 characters")
+                              }
+                            }else{
+                              setErr("ID Number is incorrect")
                             }
                           }else{
-                            setErr("Enter all details!")
+                            setErr("Email is incorrect")
                           }
+                        }else{
+                          setErr("Enter all details!")
+                        }
                     }}
                 >
                     Register

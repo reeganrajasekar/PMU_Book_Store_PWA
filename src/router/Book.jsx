@@ -23,7 +23,7 @@ export default function Book(){
           }
         var jsonValue = localStorage.getItem("data")
         let list = JSON.parse(jsonValue)
-      fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/lib?student_id='+list[0].student_id)
+      fetch('https://wakeful-flower-wind.glitch.me/api/lib?student_id='+list[0].student_id)
         .then((response) => response.json())
         .then((i) => {
           setData([])
@@ -35,7 +35,10 @@ export default function Book(){
             }else if(j.data=="You can pick"){
               setHave(oldArray => [...oldArray, j])
             }else{
-              setOld(oldArray => [...oldArray, j])
+              if(j.data!="Canceled"){
+
+                setOld(oldArray => [...oldArray, j])
+              }
             }
           })
         })

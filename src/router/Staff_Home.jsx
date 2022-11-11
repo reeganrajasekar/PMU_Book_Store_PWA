@@ -21,7 +21,7 @@ export default function Home(){
             history.push('/')
           }
         async function mine(){
-            fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/staff/books')
+            fetch('https://wakeful-flower-wind.glitch.me/api/staff/books')
               .then((response) => response.json())
               .then((data) => {setData(data)})
             .catch((error) => {
@@ -43,7 +43,7 @@ export default function Home(){
                         async (text) => {
                             const jsonValue = localStorage.getItem("data")
                             let list = JSON.parse(jsonValue)
-                            fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api//staff/books?dept='+list[0].dept+'&book_name='+text.target.value)
+                            fetch('https://wakeful-flower-wind.glitch.me/api//staff/books?dept='+list[0].dept+'&book_name='+text.target.value)
                               .then((response) => response.json())
                               .then((data) => {setData(data)})
                             .catch((error) => {
@@ -62,7 +62,7 @@ export default function Home(){
                         <div key={item._id} onClick={
                             ()=>{
                                 if(confirm("Create Request:\n"+"\tBook Name : "+item.book_name+"\n"+"\tAuthor Name : "+item.author_name)){
-                                    fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/staff/request', {
+                                    fetch('https://wakeful-flower-wind.glitch.me/api/staff/request', {
                                         method: 'POST',
                                         body: JSON.stringify({
                                             staff_id : person_id,
@@ -92,7 +92,7 @@ export default function Home(){
                         <span style={{color:'#aaa',fontSize:20}}>Author :{"\t"}<span style={{color:'#042744'}}>{item.author_name}</span></span>
                         <span style={{color:'#aaa',fontSize:20}}>ISBN    :{"\t"}<span style={{color:'#042744'}}>{item.ISBN}</span></span>
                         <span style={{color:'#aaa',fontSize:20}}>Edition :{"\t"}<span style={{color:'#042744'}}>{item.version} / {item.year}</span></span>
-                        <span style={{color:'#aaa',fontSize:20}}>Dept    :{"\t"}<span style={{color:'#042744'}}>{item.dept}</span></span>
+                        <span style={{color:'#aaa',fontSize:20}}>Dept    :{"\t"}<p style={{color:'#042744',fontSize:16,textAlign:'justify'}}>{item.dept.map((i)=><span >&ensp;&ensp;&ensp;{i}<br/></span>)}</p></span>
                         </div>
 
                     )

@@ -32,12 +32,12 @@ export default function Login(){
                 <b>PMU Bookstore</b>
             </h1>
 
-                <input onChange={(i)=>{setEmail(i.target.value)}} placeholder='Email' type="email" style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                <input onChange={(i)=>{setPassword(i.target.value)}} placeholder='Password' type="password" style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                <p style={{color:'red'}}>{err}</p>
+                <input onChange={(i)=>{setEmail(i.target.value)}} placeholder='Email' type="email" style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
+                <input onChange={(i)=>{setPassword(i.target.value)}} min={12} placeholder='Password' type="password" style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
+                <p style={{color:'red',textAlign:"center"}}>{err}</p>
                 <div>
                     <input onClick={()=>{setStaff((staff)?false:true)}} type="checkbox" name=""  style={{marginRight:7,marginBottom:20,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'red !important',fontSize:22,textAlign:'left',paddingLeft:15,}}/>
-                    <label style={{color:"#042744",marginBottom:20}}>login as a Staff</label>
+                    <label style={{color:"#042744",marginBottom:20}}>login as an Academic Staff</label>
                 </div>
 
                 <button
@@ -54,75 +54,73 @@ export default function Login(){
                     }}
 
                     onClick={()=>{
-                        if(email!="" && password!=""){
-                            let reg = /[a-zA-Z]@(pmu)\.edu\.sa\b$/g;
-                            if (reg.test(email) === false) {
-                              setErr("Email is Incorrect");
+                      if(email!="" && password!=""){
+                        let stureg = /[0-9]@(pmu)\.edu\.sa\b$/g;
+                        let reg = /[a-zA-Z0-9]@(pmu)\.edu\.sa\b$/g;
+                        if (reg.test(email) === true && staff) {
+                          fetch('https://wakeful-flower-wind.glitch.me/api/staff/', {
+                              method: 'POST',
+                              body: JSON.stringify({
+                                staff_email:email,
+                                staff_password:password
+                              }),
+                              headers: {
+                                "Content-Type": "application/json"
+                              },
+                          })
+                          .then((response) => response.json())
+                          .then(async (data) => {
+                            if(data.code=="Ok"){
+                              const jsonValue = JSON.stringify(data.staff)
+                              localStorage.setItem('Login','staff')
+                              localStorage.setItem('data',jsonValue)
+                              history.push("/staffHome")
+                            }else{
+                              setErr(data.code);
                             }
-                            else {
-                              setErr("")
-                              if(staff){
-                                fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/staff/', {
-                                  method: 'POST',
-                                  body: JSON.stringify({
-                                    staff_email:email,
-                                    staff_password:password
-                                  }),
-                                  headers: {
-                                    "Content-Type": "application/json"
-                                  },
-                                })
-                                  .then((response) => response.json())
-                                  .then(async (data) => {
-                                    if(data.code=="Ok"){
-                                      const jsonValue = JSON.stringify(data.staff)
-                                      localStorage.setItem('Login','staff')
-                                      localStorage.setItem('data',jsonValue)
-                                      history.push("/staffHome")
-                                    }else{
-                                      setErr(data.code);
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    setErr("Server Error Try Again")
-                                    console.error(error);
-                                  });
-                              }else{
-                                fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/', {
-                                  method: 'POST',
-                                  body: JSON.stringify({
-                                    student_email:email,
-                                    student_password:password
-                                  }),
-                                  headers: {
-                                    "Content-Type": "application/json"
-                                  },
-                                })
-                                  .then((response) => response.json())
-                                  .then(async (data) => {
-                                    if(data.code=="Ok"){
-                                      const jsonValue = JSON.stringify(data.student)
-                                      localStorage.setItem('Login','student')
-                                      localStorage.setItem('data',jsonValue)
-                                      history.push("/home")
-                                    }else{
-                                      setErr(data.code);
-                                    }
-                                  })
-                                  .catch((error) => {
-                                    setErr("Server Error Try Again")
-                                    console.error(error);
-                                  });
-                              }
+                          })
+                          .catch((error) => {
+                            setErr("Server Error Try Again")
+                            console.error(error);
+                          });
+                        }else if(stureg.test(email) === true && !staff){
+                          fetch('https://wakeful-flower-wind.glitch.me/api/', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                              student_email:email,
+                              student_password:password
+                            }),
+                            headers: {
+                              "Content-Type": "application/json"
+                            },
+                          })
+                          .then((response) => response.json())
+                          .then(async (data) => {
+                            if(data.code=="Ok"){
+                              const jsonValue = JSON.stringify(data.student)
+                              localStorage.setItem('Login','student')
+                              localStorage.setItem('data',jsonValue)
+                              localStorage.setItem('intro',false)
+                              history.push("/home")
+                            }else{
+                              setErr(data.code);
                             }
-                          }else{
-                            setErr("Enter all details!")
-                          }
+                          })
+                          .catch((error) => {
+                            setErr("Server Error Try Again")
+                            console.error(error);
+                          });
+                        }else{
+                          setErr("Email is incorrect!")
+                        }
+                      }else{
+                        setErr("Enter all details!")
+                      }
                     }}
                 >
                     Login
                 </button>
-                <a href="http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/forgot" target={"blind"} style={{padding:30,color:'#F67327'}}>Forgot Password?</a>
+                <a href="https://wakeful-flower-wind.glitch.me/api/forgot" target={"blind"} style={{padding:30,color:'#F67327'}}>Forgot Password?</a>
 
             <p
             style = {{marginTop:10,fontSize:18,color:'#042744'}}

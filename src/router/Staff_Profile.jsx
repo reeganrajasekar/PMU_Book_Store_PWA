@@ -44,7 +44,8 @@ export default function Profile(){
               style={{width:100,height:100}}
               src={Logo}
             />
-            <span style={{fontSize:26,fontWeight:'bold',paddingTop:20,paddingBottom:20,color:'#042744'}}>PMU BookStore</span>
+            <span style={{fontSize:26,fontWeight:'bold',paddingTop:20,color:'#042744'}}>PMU BookStore</span>
+            <span style={{fontSize:26,fontWeight:'bold',paddingBottom:20,color:'#042744'}}>Staff</span>
             <div style={{display:'flex',flexDirection:"column",width:'100%',height:'auto',padding:20}}>
               <span style={{color:'#aaa',fontSize:20}}>Name    :</span>
               <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{name}{"\n"}</p>
@@ -63,6 +64,7 @@ export default function Profile(){
                     fontSize:22,
                     paddingTop:8,
                     paddingBottom:8,
+                    marginBottom:80,
                     color:'#fff',
                     border:'none',
                     borderRadius:30,

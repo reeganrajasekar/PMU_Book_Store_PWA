@@ -23,7 +23,7 @@ export default function Book(){
           }
         var jsonValue = localStorage.getItem("data")
         let list = JSON.parse(jsonValue)
-      fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/staff/lib?staff_id='+list[0].staff_id)
+      fetch('https://wakeful-flower-wind.glitch.me/api/staff/lib?staff_id='+list[0].staff_id)
         .then((response) => response.json())
         .then((i) => {
           setData([])
@@ -61,16 +61,15 @@ export default function Book(){
             )}
             {(have[0])?<span  style={{paddingTop:20,paddingLeft:15,fontSize:22,fontWeight:'bold',color:'#F67327'}}>Scheduled Books : </span>:""}
             {have.map((i)=>
-                <div key={i._id} style={{display:"flex",flexDirection:"column",padding:15,justifyContent:'space-evenly',marginLeft:10,marginRight:10,width:"auto",height:150,marginTop:10,borderRadius:10,border:'1px solid #F5DBCC',backgroundColor:'#fff'}}>
+                <div key={i._id} style={{display:"flex",flexDirection:"column",padding:10,justifyContent:'space-evenly',marginLeft:10,marginRight:10,width:"auto",height:"auto",marginTop:10,borderRadius:10,border:'1px solid #F5DBCC',backgroundColor:'#fff'}}>
                     <span style={{color:'#aaa',fontSize:20}}>Book       :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{i.book_name}</span></span>
-                    <span style={{color:'#aaa',fontSize:20}}>Schedule :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{moment(new Date(i.gettime).toISOString().substr(0, 19)).format('MMMM Do YYYY, h:mm a')}</span></span>
                     <span style={{color:'#aaa',fontSize:20}}>Message :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{i.data}</span></span>
                 </div>
             )}
             {(old[0])?<span style={{paddingTop:20,paddingLeft:15,fontSize:22,fontWeight:'bold',color:'#F67327'}}>Books you have : </span>:""}
 
             {old.map((i)=>
-                <div  key={i._id} style={{display:"flex",flexDirection:"column",padding:10,justifyContent:'space-evenly',marginLeft:10,marginRight:10,width:"auto",height:150,marginTop:10,borderRadius:10,border:'1px solid #F5DBCC',backgroundColor:'#fff'}}>
+                <div  key={i._id} style={{display:"flex",flexDirection:"column",padding:10,justifyContent:'space-evenly',marginLeft:10,marginRight:10,width:"auto",height:"auto",marginTop:10,borderRadius:10,border:'1px solid #F5DBCC',backgroundColor:'#fff'}}>
                     <span style={{color:'#aaa',fontSize:20}}>Book       :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{i.book_name}</span></span>
                     <span style={{color:'#aaa',fontSize:20}}>Return Date :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{moment(new Date(i.gettime).toISOString().substr(0, 19)).add(30, 'days').format('MMMM Do YYYY')}</span></span>
                     <span style={{color:'#aaa',fontSize:20}}>Message :{'\n'}<span style={{color:'#042744'}}>{'\t\t'}{i.data}</span></span>

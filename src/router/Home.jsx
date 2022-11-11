@@ -1,6 +1,9 @@
 import home from "../assets/Nav/home-color.png"
 import collection from "../assets/Nav/collection.png"
 import profile from "../assets/Nav/profile.png"
+import intro1 from "../assets/search.mp4"
+import intro2 from "../assets/request.mp4"
+import intro3 from "../assets/status.png"
 import { useState,useEffect } from 'react';
 import {Link , useHistory} from "react-router-dom";
 
@@ -10,8 +13,16 @@ export default function Home(){
     const [data,setData] = useState([]);
     const [person_name,setName] = useState("");
     const [person_id,setId] = useState("");
+    const [get_time,setGetTime] = useState();
     useEffect(() => {
         document.body.style = "background-color:whitesmoke !important;display:block";
+        var intro = localStorage.getItem('intro');
+        console.log(intro);
+        if(intro=="false"){
+            document.getElementById("intromodel").style.display="block";
+            document.getElementById("vid1").playbackRate = 0.3;
+        }
+
         async function mine(){
             var jsonValue = localStorage.getItem('Login');
             if(jsonValue=="student"){
@@ -23,7 +34,7 @@ export default function Home(){
             }
             var jsonValue = localStorage.getItem("data")
             let list = JSON.parse(jsonValue)
-            fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/books?dept='+list[0].dept)
+            fetch('https://wakeful-flower-wind.glitch.me/api/books?dept='+list[0].dept)
               .then((response) => response.json())
               .then((data) => {setData(data)})
             .catch((error) => {
@@ -39,13 +50,56 @@ export default function Home(){
       },[]);
     return(
         <>
+            <div id="intromodel" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Welcome to PMU Bookstore</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div id="in1" style={{display:"block"}}>
+                            <video id="vid1" src={intro1} width="100%" play autoPlay loop></video>
+                        </div>
+
+                        <div id="in2" style={{display:"none"}}>
+                            <video id="vid2" src={intro2} controls width="100%" loop></video>
+                        </div>
+
+                        <div id="in3" style={{display:"none"}}>
+                            <img src={intro3} width="100%" />
+                        </div>
+
+                        <hr />
+                    </div>
+                    <div lass="modal-footer" style={{display:"flex",justifyContent:"space-between",padding:"0 20px"}}>
+                        <p style={{color:"#444"}} onClick={()=>{
+                            document.getElementById("intromodel").style.display="none";
+                            localStorage.setItem("intro",true)
+                        }}>Skip</p>
+                        <p style={{color:"#F67327"}} onClick={()=>{
+                            if(document.getElementById("in1").style.display=="block"){
+                                document.getElementById("in1").style.display="none"
+                                document.getElementById("in2").style.display="block"
+                            }else if(document.getElementById("in2").style.display=="block"){
+                                document.getElementById("in2").style.display="none"
+                                document.getElementById("in3").style.display="block"
+                            }else if(document.getElementById("in3").style.display=="block"){
+                                document.getElementById("intromodel").style.display="none"
+                                localStorage.setItem("intro",true)
+
+                            }
+                        }}>Next</p>
+                    </div>
+                </div>
+            </div>
+
+
             <div style={{display:"flex",justifyContent:'center',alignItems:'center',flexDirection:'column',width:"100%"}}>
                 <div style={{position:'sticky',top:0,padding:10,width:"98vw",backdropFilter:"blur(8px)",borderRadius:"0px 0px 15px 15px"}}>
                     <input onChange={
                         async (text) => {
                             const jsonValue = localStorage.getItem("data")
                             let list = JSON.parse(jsonValue)
-                            fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/books?dept='+list[0].dept+'&book_name='+text.target.value)
+                            fetch('https://wakeful-flower-wind.glitch.me/api/books?dept='+list[0].dept+'&book_name='+text.target.value)
                               .then((response) => response.json())
                               .then((data) => {setData(data)})
                             .catch((error) => {
@@ -60,42 +114,63 @@ export default function Home(){
 
                 {
                     data.map((item)=>
-
-                        <div key={item._id} onClick={
-                            ()=>{
-                                if(confirm("Create Request:\n"+"\tBook Name : "+item.book_name+"\n"+"\tAuthor Name : "+item.author_name)){
-                                    fetch('http://ec2-65-2-181-127.ap-south-1.compute.amazonaws.com/api/request', {
-                                        method: 'POST',
-                                        body: JSON.stringify({
-                                        student_id : person_id,
-                                        student_name: person_name,
-                                        book_id: item._id,
-                                        book_name : item.book_name,
-                                        }),
-                                        headers: {
-                                        "Content-Type": "application/json"
-                                        },
-                                    })
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                        if(data.code=="Requested"){
-                                            history.push("/book")
-                                        }else{
-                                            alert(data.code)
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        console.error(error);
-                                    })
-                                }
-                            }} 
+                        <>
+                        <div key={item._id} onClick={()=>{
+                            document.getElementById("model"+item._id).style.display="block"
+                        }}
                             style={{boxShadow:"0px 0px 2px #F67327",display:"flex",padding:10,justifyContent:'space-evenly',marginLeft:10,flexDirection:'column',marginRight:10,width:"95%",height:'100%',minHeight:150,marginTop:15,borderRadius:10,border:'1px solid #F5DBCC',backgroundColor:'#fff'}}>
                         <span style={{color:'#aaa',fontSize:20}}>Book    :{"\t"}<span style={{color:'#042744'}}>{item.book_name}</span></span>
                         <span style={{color:'#aaa',fontSize:20}}>Author :{"\t"}<span style={{color:'#042744'}}>{item.author_name}</span></span>
                         <span style={{color:'#aaa',fontSize:20}}>ISBN    :{"\t"}<span style={{color:'#042744'}}>{item.ISBN}</span></span>
                         <span style={{color:'#aaa',fontSize:20}}>Edition :{"\t"}<span style={{color:'#042744'}}>{item.version} / {item.year}</span></span>
-                        <span style={{color:'#aaa',fontSize:20}}>Dept    :{"\t"}<span style={{color:'#042744'}}>{item.dept}</span></span>
                         </div>
+
+                        <div id={"model"+item._id} class="modal" >
+                            <div class="modal-content"  >
+                                <div class="modal-header">
+                                    <h2>Create Request:</h2>
+                                    <span class="close" onClick={()=>{
+                                        document.getElementById("model"+item._id).style.display="none"
+                                    }}>&times;</span>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Book Name : {item.book_name}</p>
+                                    <p>Author Name : {item.author_name}</p>
+                                    <label style={{color:"#999"}}>Schedule Time : </label>
+                                    <input type="datetime-local" class="form-control" onChange={(i)=>{setGetTime(i.target.value)}} name="gettime"/>
+                                    <button style={{width:"100%",height:40,fontSize:18,fontWeight:600,color:"#fff",border:"none",backgroundColor:"#F67327",marginTop:20,borderRadius:10}} onClick={
+                                        ()=>{
+                                            if(true){
+                                                fetch('https://wakeful-flower-wind.glitch.me/api/request', {
+                                                    method: 'POST',
+                                                    body: JSON.stringify({
+                                                    student_id : person_id,
+                                                    student_name: person_name,
+                                                    book_id: item._id,
+                                                    book_name : item.book_name,
+                                                    get_time : get_time,
+                                                    }),
+                                                    headers: {
+                                                    "Content-Type": "application/json"
+                                                    },
+                                                })
+                                                .then((response) => response.json())
+                                                .then((data) => {
+                                                    if(data.code=="Requested"){
+                                                        history.push("/book")
+                                                    }else{
+                                                        alert(data.code)
+                                                    }
+                                                })
+                                                .catch((error) => {
+                                                    console.error(error);
+                                                })
+                                            }
+                                        }}>Create</button>
+                                </div>
+                            </div>
+                        </div>
+                        </>
 
                     )
                 }

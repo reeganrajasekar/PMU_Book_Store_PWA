@@ -44,16 +44,17 @@ export default function Profile(){
               style={{width:100,height:100}}
               src={Logo}
             />
-            <span style={{fontSize:26,fontWeight:'bold',paddingTop:20,paddingBottom:20,color:'#042744'}}>PMU BookStore</span>
+            <span style={{fontSize:26,fontWeight:'bold',paddingTop:20,color:'#042744'}}>PMU BookStore</span>
+            <span style={{fontSize:26,fontWeight:'bold',paddingBottom:20,color:'#042744'}}>Student</span>
             <div style={{display:'flex',flexDirection:"column",width:'100%',height:'auto',padding:20}}>
               <span style={{color:'#aaa',fontSize:20}}>Name    :</span>
-              <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{name}{"\n"}</p>
+              <p style={{color:'#042744',fontSize:18}}>&ensp;&ensp;{name}{"\n"}</p>
               <span style={{color:'#aaa',fontSize:20}}>Register No :</span>
-              <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{id}{"\n"}</p>
+              <p style={{color:'#042744',fontSize:18}}>&ensp;&ensp;{id}{"\n"}</p>
               <span style={{color:'#aaa',fontSize:20}}>Email :</span>
-              <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{email}{"\n"}</p>
+              <p style={{color:'#042744',fontSize:18}}>&ensp;&ensp;{email}{"\n"}</p>
               <span style={{color:'#aaa',fontSize:20}}>Department    :</span>
-              <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{dept}</p>
+              <p style={{color:'#042744',fontSize:18}}>&ensp;&ensp;{dept}</p>
             </div>
 
             <button
