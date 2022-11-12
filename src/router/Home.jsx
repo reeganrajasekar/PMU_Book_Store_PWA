@@ -14,6 +14,7 @@ export default function Home(){
     const [person_name,setName] = useState("");
     const [person_id,setId] = useState("");
     const [get_time,setGetTime] = useState();
+    const [pic, setPic] = useState(null);
     useEffect(() => {
         document.body.style = "background-color:whitesmoke !important;display:block";
         var intro = localStorage.getItem('intro');
@@ -34,9 +35,13 @@ export default function Home(){
             }
             var jsonValue = localStorage.getItem("data")
             let list = JSON.parse(jsonValue)
+            document.getElementById("loader").style.display = "block"
             fetch('https://wakeful-flower-wind.glitch.me/api/books?dept='+list[0].dept)
-              .then((response) => response.json())
-              .then((data) => {setData(data)})
+            .then((response) => response.json())
+            .then((data) => {
+                setData(data);
+                document.getElementById("loader").style.display = "none"
+            })
             .catch((error) => {
               alert(JSON.stringify(error));
               console.error(error);
@@ -48,6 +53,12 @@ export default function Home(){
           }
           mine();
       },[]);
+
+      const handleFileChange = (e) => {
+        if (e.currentTarget.files) {
+          setPic(e.currentTarget.files[0]);
+        }
+      };
     return(
         <>
             <div id="intromodel" class="modal">
@@ -57,11 +68,11 @@ export default function Home(){
                     </div>
                     <div class="modal-body">
                         <div id="in1" style={{display:"block"}}>
-                            <video id="vid1" src={intro1} width="100%" play autoPlay loop></video>
+                            <video id="vid1" src={intro1} width="100%" play autoPlay></video>
                         </div>
 
                         <div id="in2" style={{display:"none"}}>
-                            <video id="vid2" src={intro2} controls width="100%" loop></video>
+                            <video id="vid2" src={intro2} controls width="100%" ></video>
                         </div>
 
                         <div id="in3" style={{display:"none"}}>
@@ -99,9 +110,12 @@ export default function Home(){
                         async (text) => {
                             const jsonValue = localStorage.getItem("data")
                             let list = JSON.parse(jsonValue)
+                            document.getElementById("loader").style.display = "block"
                             fetch('https://wakeful-flower-wind.glitch.me/api/books?dept='+list[0].dept+'&book_name='+text.target.value)
                               .then((response) => response.json())
-                              .then((data) => {setData(data)})
+                              .then((data) => {setData(data)
+                                document.getElementById("loader").style.display = "none"
+                            })
                             .catch((error) => {
                               alert("Something went wrong");
                               console.error(error);
@@ -137,34 +151,38 @@ export default function Home(){
                                     <p>Book Name : {item.book_name}</p>
                                     <p>Author Name : {item.author_name}</p>
                                     <label style={{color:"#999"}}>Schedule Time : </label>
-                                    <input type="datetime-local" class="form-control" onChange={(i)=>{setGetTime(i.target.value)}} name="gettime"/>
+                                    <input type="datetime-local" min={new Date().toISOString().substring(0,16)} class="form-control" onChange={(i)=>{setGetTime(i.target.value)}} name="gettime"/>
+                                    <br/>
+                                    <label style={{color:"#999"}}>Coupon (pdf) : </label>
+                                    <input type="file" accept="application/pdf" id={"file"+item._id} class="form-control" name="file" onChange={handleFileChange}/>
+                            
                                     <button style={{width:"100%",height:40,fontSize:18,fontWeight:600,color:"#fff",border:"none",backgroundColor:"#F67327",marginTop:20,borderRadius:10}} onClick={
                                         ()=>{
-                                            if(true){
+                                            if(pic!=="" && get_time!=""){
+                                                var picimg = document.getElementById("file"+item._id);
+                                                const formData = new FormData()
+                                                formData.append("student_id",person_id)
+                                                formData.append("student_name",person_name)
+                                                formData.append("book_id",item._id)
+                                                formData.append("book_name",item.book_name)
+                                                formData.append("get_time",get_time)
+                                                formData.append("file",picimg.files[0])
                                                 fetch('https://wakeful-flower-wind.glitch.me/api/request', {
+                                                    mode: 'no-cors',
                                                     method: 'POST',
-                                                    body: JSON.stringify({
-                                                    student_id : person_id,
-                                                    student_name: person_name,
-                                                    book_id: item._id,
-                                                    book_name : item.book_name,
-                                                    get_time : get_time,
-                                                    }),
+                                                    body: formData,
                                                     headers: {
-                                                    "Content-Type": "application/json"
+                                                      "Content-Type": "application/json"
                                                     },
                                                 })
-                                                .then((response) => response.json())
-                                                .then((data) => {
-                                                    if(data.code=="Requested"){
-                                                        history.push("/book")
-                                                    }else{
-                                                        alert(data.code)
-                                                    }
+                                                .then((response) => {
+                                                    history.push("/book")
                                                 })
                                                 .catch((error) => {
                                                     console.error(error);
                                                 })
+                                            }else{
+                                                alert("Enter all details")
                                             }
                                         }}>Create</button>
                                 </div>

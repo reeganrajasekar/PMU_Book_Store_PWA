@@ -58,6 +58,7 @@ export default function Login(){
                         let stureg = /[0-9]@(pmu)\.edu\.sa\b$/g;
                         let reg = /[a-zA-Z0-9]@(pmu)\.edu\.sa\b$/g;
                         if (reg.test(email) === true && staff) {
+                          document.getElementById("loader").style.display = "block"
                           fetch('https://wakeful-flower-wind.glitch.me/api/staff/', {
                               method: 'POST',
                               body: JSON.stringify({
@@ -74,6 +75,7 @@ export default function Login(){
                               const jsonValue = JSON.stringify(data.staff)
                               localStorage.setItem('Login','staff')
                               localStorage.setItem('data',jsonValue)
+                            document.getElementById("loader").style.display = "none"
                               history.push("/staffHome")
                             }else{
                               setErr(data.code);
@@ -84,6 +86,7 @@ export default function Login(){
                             console.error(error);
                           });
                         }else if(stureg.test(email) === true && !staff){
+                          document.getElementById("loader").style.display = "block"
                           fetch('https://wakeful-flower-wind.glitch.me/api/', {
                             method: 'POST',
                             body: JSON.stringify({
@@ -101,6 +104,7 @@ export default function Login(){
                               localStorage.setItem('Login','student')
                               localStorage.setItem('data',jsonValue)
                               localStorage.setItem('intro',false)
+                              document.getElementById("loader").style.display = "none"
                               history.push("/home")
                             }else{
                               setErr(data.code);

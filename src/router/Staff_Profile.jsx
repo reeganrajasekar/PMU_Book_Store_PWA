@@ -49,7 +49,7 @@ export default function Profile(){
             <div style={{display:'flex',flexDirection:"column",width:'100%',height:'auto',padding:20}}>
               <span style={{color:'#aaa',fontSize:20}}>Name    :</span>
               <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{name}{"\n"}</p>
-              <span style={{color:'#aaa',fontSize:20}}>Register No :</span>
+              <span style={{color:'#aaa',fontSize:20}}>ID No :</span>
               <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{id}{"\n"}</p>
               <span style={{color:'#aaa',fontSize:20}}>Email :</span>
               <p style={{color:'#042744',fontSize:26}}>&ensp;&ensp;{email}{"\n"}</p>

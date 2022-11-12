@@ -21,9 +21,13 @@ export default function Home(){
             history.push('/')
           }
         async function mine(){
+            document.getElementById("loader").style.display = "block"
             fetch('https://wakeful-flower-wind.glitch.me/api/staff/books')
               .then((response) => response.json())
-              .then((data) => {setData(data)})
+              .then((data) => {
+                setData(data);
+                document.getElementById("loader").style.display = "none"
+            })
             .catch((error) => {
               alert(JSON.stringify(error));
               console.error(error);
@@ -43,9 +47,12 @@ export default function Home(){
                         async (text) => {
                             const jsonValue = localStorage.getItem("data")
                             let list = JSON.parse(jsonValue)
+                            document.getElementById("loader").style.display = "block"
                             fetch('https://wakeful-flower-wind.glitch.me/api//staff/books?dept='+list[0].dept+'&book_name='+text.target.value)
                               .then((response) => response.json())
-                              .then((data) => {setData(data)})
+                              .then((data) => {setData(data)
+                                document.getElementById("loader").style.display = "none"
+                            })
                             .catch((error) => {
                               alert("Something went wrong");
                               console.error(error);
@@ -62,6 +69,7 @@ export default function Home(){
                         <div key={item._id} onClick={
                             ()=>{
                                 if(confirm("Create Request:\n"+"\tBook Name : "+item.book_name+"\n"+"\tAuthor Name : "+item.author_name)){
+                                    document.getElementById("loader").style.display = "block"
                                     fetch('https://wakeful-flower-wind.glitch.me/api/staff/request', {
                                         method: 'POST',
                                         body: JSON.stringify({
@@ -77,6 +85,7 @@ export default function Home(){
                                     .then((response) => response.json())
                                     .then((data) => {
                                         if(data.code=="Requested"){
+                                        document.getElementById("loader").style.display = "none"
                                             history.push("/staffBook")
                                         }else{
                                             alert(data.code)

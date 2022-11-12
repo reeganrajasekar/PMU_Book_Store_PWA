@@ -11,6 +11,7 @@ export default function Register(){
     const [password, setPassword] = React.useState("");
     const [staff, setStaff] = React.useState(false);
     const [err,setErr] = React.useState("")
+    const [file,setFile] = React.useState(false)
     return(
         <>
         <div style={{display:'flex',justifyContent:'center',width:"100vw",height:"100%",marginTop:40,alignItems:'center',flexDirection:'column'}}>
@@ -56,6 +57,11 @@ export default function Register(){
                   </optgroup>
 
                 </select>
+                <div className='form-group'>
+                  <label style={{fontSize:20,fontWeight:600,color:"#222"}}>ID Card ( jpg / jpeg / png ) :</label>
+                  <input type="file" onChange={()=>{setFile(true)}} accept="image/png, image/jpg, image/jpeg" placeholder='ID Card' id='file' class="form-control" name="file" style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:16,textAlign:'left',padding:15,}}/>
+                </div>
+
                 <input onChange={(i)=>{setEmail(i.target.value)}} placeholder='Email' type="email" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
                 <input onChange={(i)=>{setPassword(i.target.value)}} placeholder='Password' type="password" required style={{marginBottom:20,width:300,height:50,borderWidth:1,borderRadius:20,borderColor:'#042744',backgroundColor:'#eee',fontSize:22,textAlign:'left',padding:15,}}/>
                 <ul>
@@ -81,10 +87,10 @@ export default function Register(){
                         border:'none',
                         borderRadius:30,
                         backgroundColor: '#F67327'
-                    }}
-
-                    onClick={()=>{
-                        if(email!="" && name!="" && id!="" && password!="" && dept!=""){
+                      }}
+                      
+                      onClick={()=>{
+                        if(email!="" && name!="" && id!="" && password!="" && dept!="" && file==true){
                           let stureg = /[0-9]@(pmu)\.edu\.sa\b$/g;
                           let reg = /[a-zA-Z0-9]@(pmu)\.edu\.sa\b$/g;
                           let regstuid = /[0-9]\b$/g;
@@ -97,26 +103,23 @@ export default function Register(){
                                 if(format.test(password)===true && format1.test(password)===true){
                                   let newFormat =  /[0-9]/;
                                   if(newFormat.test(password)===true){
+                                    const picimg = document.getElementById('file');
+                                    const formData = new FormData()
+                                    formData.append("staff_id",id)
+                                    formData.append("staff_name",name)
+                                    formData.append("staff_email",email)
+                                    formData.append("staff_password",password)
+                                    formData.append("dept",dept)
+                                    formData.append("file",picimg.files[0])
+                                    document.getElementById("loader").style.display = "block"
                                     fetch('https://wakeful-flower-wind.glitch.me/api/staff/register', {
+                                      mode: 'no-cors',
                                       method: 'POST',
-                                      body: JSON.stringify({
-                                        staff_id:id,
-                                        staff_name:name,
-                                        staff_email:email,
-                                        staff_password:password,
-                                        dept:dept
-                                      }),
-                                      headers: {
-                                        "Content-Type": "application/json"
-                                      },
+                                      body: formData
                                     })
-                                    .then((response) => response.json())
-                                    .then((responseJson) => {
-                                      if(responseJson.code == "registered"){
+                                    .then((response) => {
+                                        document.getElementById("loader").style.display = "none"
                                         history.push("/")
-                                      }else{
-                                        setErr(responseJson.code);
-                                      }
                                     })
                                     .catch((error) => {
                                       setErr("Server Error Try Again")
@@ -142,26 +145,23 @@ export default function Register(){
                                 if(format.test(password)===true && format1.test(password)===true){
                                   let newFormat =  /[0-9]/;
                                   if(newFormat.test(password)===true){
+                                    const picimg = document.getElementById('file');
+                                    const formData = new FormData()
+                                    formData.append("student_id",id)
+                                    formData.append("student_name",name)
+                                    formData.append("student_email",email)
+                                    formData.append("student_password",password)
+                                    formData.append("dept",dept)
+                                    formData.append("file",picimg.files[0])
+                                    document.getElementById("loader").style.display = "block"
                                     fetch('https://wakeful-flower-wind.glitch.me/api/register', {
                                       method: 'POST',
-                                      body: JSON.stringify({
-                                        student_id:id,
-                                        student_name:name,
-                                        student_email:email,
-                                        student_password:password,
-                                        dept:dept
-                                      }),
-                                      headers: {
-                                        "Content-Type": "application/json"
-                                      },
+                                      body: formData,
+                                      mode: 'no-cors'
                                     })
-                                    .then((response) => response.json())
-                                    .then((responseJson) => {
-                                      if(responseJson.code == "registered"){
+                                    .then((response) => {
+                                        document.getElementById("loader").style.display = "none"
                                         history.push("/")
-                                      }else{
-                                        setErr(responseJson.code);
-                                      }
                                     })
                                     .catch((error) => {
                                       setErr("Server Error Try Again")

@@ -23,7 +23,8 @@ export default function Book(){
           }
         var jsonValue = localStorage.getItem("data")
         let list = JSON.parse(jsonValue)
-      fetch('https://wakeful-flower-wind.glitch.me/api/lib?student_id='+list[0].student_id)
+        document.getElementById("loader").style.display = "block"
+        fetch('https://wakeful-flower-wind.glitch.me/api/lib?student_id='+list[0].student_id)
         .then((response) => response.json())
         .then((i) => {
           setData([])
@@ -32,15 +33,15 @@ export default function Book(){
           i.map((j)=>{
             if(j.data=="Waiting List"){
               setData(arr => [...arr , j])
-            }else if(j.data=="You can pick"){
+            }else if(j.data=="Ready To Pick Up!"){
               setHave(oldArray => [...oldArray, j])
             }else{
               if(j.data!="Canceled"){
-
                 setOld(oldArray => [...oldArray, j])
               }
             }
           })
+          document.getElementById("loader").style.display = "none"
         })
         .catch((error) => {
           alert(JSON.stringify(error));
